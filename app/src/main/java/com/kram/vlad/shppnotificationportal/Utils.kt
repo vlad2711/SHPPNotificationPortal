@@ -1,6 +1,8 @@
 package com.kram.vlad.shppnotificationportal
 
 import android.util.Base64
+import com.kram.vlad.shppnotificationportal.rest.pojo.TwitterModels
+import java.util.ArrayList
 
 
 /**
@@ -10,7 +12,8 @@ import android.util.Base64
 
 class Utils{
     companion object {
-        fun createBase64AuthString() = Base64.encodeToString(
+        var news: ArrayList<TwitterModels.Companion.Tweet> = ArrayList()
+        fun createBase64AuthString() = "Basic " + Base64.encodeToString(
                 (Constants.TWITTER_API_KEY + ":" + Constants.TWITTER_API_SECRET).toByteArray(Charsets.UTF_8), Base64.DEFAULT)
                 .replace("\n", "")
     }
