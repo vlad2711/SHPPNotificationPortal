@@ -13,8 +13,10 @@ import java.util.ArrayList
 class Utils{
     companion object {
         var news: ArrayList<TwitterModels.Companion.Tweet> = ArrayList()
-        fun createBase64AuthString() = "Basic " + Base64.encodeToString(
-                (Constants.TWITTER_API_KEY + ":" + Constants.TWITTER_API_SECRET).toByteArray(Charsets.UTF_8), Base64.DEFAULT)
-                .replace("\n", "")
+        var from = 0
+        var to = 10
+        fun createBase64AuthString() = "Basic " + Base64.encodeToString((Constants.TWITTER_API_KEY + ":" + Constants.TWITTER_API_SECRET)
+                        .toByteArray(Charsets.UTF_8), Base64.DEFAULT)
+                        .replace("\n", "")
     }
 }

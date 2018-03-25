@@ -16,8 +16,12 @@ import retrofit2.http.Query
 interface GetTweets {
     @GET("1.1/statuses/user_timeline.json")
     fun getTweets (@Header("Authorization") bearer: String,
-                   @Query("screen_name") name: String = Constants.TWITTER_SHPP_NAME,
-                   @Query("count") count: Int = 10): Call<ResponseBody>
+              //   @Query("since_id") from: Int,
+               //  @Query("max_id") to: Int,
+                   @Query("exclude_replies") exclude: Boolean = false,
+                   @Query("screen_name") name: String = Constants.TWITTER_SHPP_NAME
+                 //  @Query("count") count: Int = 10
+    ): Call<ResponseBody>
 
    companion object Factory {
         fun create(): GetTweets {
