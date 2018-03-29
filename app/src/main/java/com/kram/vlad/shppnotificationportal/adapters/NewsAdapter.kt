@@ -1,6 +1,9 @@
 package com.kram.vlad.shppnotificationportal.adapters
 
+import android.content.Intent
 import android.net.Uri
+import android.support.constraint.ConstraintLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +14,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.kram.vlad.shppnotificationportal.R
-import com.kram.vlad.shppnotificationportal.Utils
 import com.kram.vlad.shppnotificationportal.activitys.MainActivity
-import kotlinx.android.synthetic.main.four_images_fragment.view.*
+import com.kram.vlad.shppnotificationportal.activitys.MediaActivity
+import com.kram.vlad.shppnotificationportal.utils.Utils
 import kotlinx.android.synthetic.main.news_layout_item.view.*
-
+import java.text.DateFormat
+import java.util.*
 
 /**
  * Created by vlad on 09.03.2018.
@@ -24,50 +28,65 @@ import kotlinx.android.synthetic.main.news_layout_item.view.*
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = Holder(LayoutInflater.from(parent.context).inflate(R.layout.news_layout_item, parent, false))
     override fun getItemCount() = Utils.news.size
-    override fun onBindViewHolder(holder: Holder, position: Int) = holder.bind(position)
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        holder.setIsRecyclable(false)
+        holder.bind(position)
+    }
 
-    class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView){
+    class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
         private val TAG = this::class.java.simpleName
 
-        fun bind(position: Int){
+        fun bind(position: Int) {
+            if (!Utils.news[position].isExpanded) {
+                itemView.expandable.collapse()
+            } else {
+                for (i in 0 until Utils.news[position].mediaUrls.size) {
+                    ((itemView.expandable.getChildAt(0) as ConstraintLayout).getChildAt(i) as ImageView).setImageUrl(Utils.news[position].mediaUrls[i].url)
+                }
+
+                itemView.expandable.expand()
+            }
+
+            val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT).format(Date(Utils.news[position].time))
             itemView.text.text = Utils.news[position].text
-            itemView.date.text = Utils.news[position].time
+            itemView.date.text = dateFormat
             itemView.name.text = Utils.news[position].userName
             itemView.icon.setImageUrl(Utils.news[position].icon_url)
 
-            if(!Utils.news[position].mediaUrls.isEmpty()){
-                val viewGroup: ViewGroup
-                if(itemView.findViewById<ImageView>(R.id.image1) == null) {
-                    val layout = getLayout(Utils.news[position].mediaUrls.size)
-                    viewGroup = ((itemView.context as MainActivity).layoutInflater.inflate(layout, itemView.media_content) as ViewGroup).getChildAt(0) as ViewGroup
+            if (Utils.news[position].mediaUrls.isNotEmpty()) {
+                itemView.media_type_text.text = itemView.resources.getString(Utils.getTextByType(Utils.news[position].mediaUrls[0].type))
+                itemView.media_type_icon.setImageResource(Utils.getImageByType(Utils.news[position].mediaUrls[0].type))
+                itemView.media_content.visibility = View.VISIBLE
+                if (Utils.news[position].mediaUrls[0].type == "photo") {
+                    itemView.media_content.setOnClickListener {
+                        for (i in 0 until Utils.news[position].mediaUrls.size) {
+                            ((itemView.expandable.getChildAt(0) as ConstraintLayout).getChildAt(i) as ImageView).setImageUrl(Utils.news[position].mediaUrls[i].url)
+                        }
+
+                        if (itemView.expandable.isExpanded) {
+                            itemView.expandable.collapse()
+                        } else {
+                            itemView.expandable.expand()
+                        }
+
+                        Utils.news[position].isExpanded = itemView.expandable.isExpanded
+                    }
                 } else{
-                    viewGroup = itemView.media_content.getChildAt(0) as ViewGroup
+                    itemView.media_content.setOnClickListener({(itemView.context as MainActivity).startActivity(
+                            Intent(itemView.context, MediaActivity::class.java).apply { putExtra("position", position)}
+                    )})
                 }
-                for (i in 0 until viewGroup.childCount) (viewGroup.getChildAt(i) as ImageView).setImageUrl(Utils.news[position].mediaUrls[0].url)
-            } else{
-                if(itemView.findViewById<ImageView>(R.id.image1) != null) Glide.with(itemView.image1).clear(itemView.image1)
+            } else {
+                itemView.media_content.visibility = View.INVISIBLE
             }
 
-            //if(position + 3 == Utils.news.size) {
-               // (itemView.context as MainActivity).getTweets()
-              //  Utils.from = Utils.to
-              ///  Utils.to = Utils.from + 10
-           // }
-
+            if (position + 3 == Utils.news.size && Utils.news.size == Utils.newsBufSize) {
+                (itemView.context as MainActivity).getTweetsMaxId(Utils.news[Utils.news.size - 1].id - 1)
+                Utils.newsBufSize += 10
+            }
         }
 
         private fun ImageView.setImageUrl(url: String) = Glide.with(this).load(Uri.parse(url))
                 .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL).override(Target.SIZE_ORIGINAL)).into(this)
-
-
-        private fun getLayout(countOfImages: Int) =
-             when(countOfImages){
-                1 -> R.layout.one_image_fragment
-                2 -> R.layout.two_image_fragment
-                3 -> R.layout.three_images_fragment
-                4 -> R.layout.four_images_fragment
-                else -> 0
-            }
-
     }
 }

@@ -24,9 +24,12 @@ android {
 repositories {
     mavenCentral()
     google()
+    jcenter()
+    maven { url 'https://dl.bintray.com/drummer-aidan/maven' }
 }
+
 dependencies {
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     //UI
     implementation 'com.android.support:appcompat-v7:27.1.0'
@@ -40,8 +43,11 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:2.3.0"
 
     //Glide
-    compile 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    compile 'com.afollestad:easyvideoplayer:0.3.0'
+    implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
 }

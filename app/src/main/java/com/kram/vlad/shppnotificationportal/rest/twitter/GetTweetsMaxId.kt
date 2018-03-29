@@ -2,9 +2,7 @@ package com.kram.vlad.shppnotificationportal.rest.twitter
 
 import android.content.Context
 import com.kram.vlad.shppnotificationportal.Constants
-import okhttp3.Cache
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
+import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,29 +11,28 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 /**
- * Created by vlad on 07.03.2018.
- * Return tweets from twitter rest api
+ * Created by vlad on 26.03.2018.
+ * Retrofit get interface. Get tweets later than id
  */
-interface GetTweets {
+interface GetTweetsMaxId {
     @GET("1.1/statuses/user_timeline.json")
-    fun getTweets (@Header("Authorization") bearer: String,
-                   @Query("exclude_replies") exclude: Boolean = true,
-                   @Query("screen_name") name: String = Constants.TWITTER_SHPP_NAME,
-                   @Query("count") count: Int = 10): Call<ResponseBody>
+    fun getTweetsMaxId (@Header("Authorization") bearer: String,
+                          @Query("max_id") to: Long,
+                          @Query("exclude_replies") exclude: Boolean = true,
+                          @Query("screen_name") name: String = Constants.TWITTER_SHPP_NAME,
+                          @Query("count") count: Int = 10): Call<ResponseBody>
+    companion object Factory{
+        private val TAG = this::class.java.simpleName
 
-
-
-    companion object Factory {
-        fun create(context: Context): GetTweets {
+        fun create(context: Context): GetTweetsMaxId{
             val client = OkHttpClient.Builder().cache(Cache(context.cacheDir, 10 * 1024 * 1024)).build()
-
             val retrofit = Retrofit.Builder()
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(Constants.TWITTER_BASE_URL)
                     .build()
 
-            return retrofit.create(GetTweets::class.java)
+            return retrofit.create(GetTweetsMaxId::class.java)
         }
     }
 }

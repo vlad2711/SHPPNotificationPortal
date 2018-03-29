@@ -2,6 +2,6 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#1EA1F3</color>
     <color name="alpha">#00000000</color> <!-- It's magic color, that fix bug don't touch-->
 </resources>
