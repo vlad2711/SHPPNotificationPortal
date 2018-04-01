@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
-        <activity android:name=".activitys.MainActivity">
+        <activity android:name="com.kram.vlad.shppnotificationportal.activitys.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -22,7 +22,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts"/>
 
-        <activity android:name=".activitys.MediaActivity">
+        <activity android:name="com.kram.vlad.shppnotificationportal.activitys.MediaActivity">
         </activity>
     </application>
 

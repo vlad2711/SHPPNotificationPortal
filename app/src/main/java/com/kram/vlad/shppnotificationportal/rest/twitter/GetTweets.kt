@@ -26,11 +26,8 @@ interface GetTweets {
 
 
     companion object Factory {
-        fun create(context: Context): GetTweets {
-            val client = OkHttpClient.Builder().cache(Cache(context.cacheDir, 10 * 1024 * 1024)).build()
-
+        fun create(): GetTweets {
             val retrofit = Retrofit.Builder()
-                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(Constants.TWITTER_BASE_URL)
                     .build()

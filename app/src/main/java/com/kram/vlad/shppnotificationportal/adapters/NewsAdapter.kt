@@ -3,7 +3,6 @@ package com.kram.vlad.shppnotificationportal.adapters
 import android.content.Intent
 import android.net.Uri
 import android.support.constraint.ConstraintLayout
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +25,7 @@ import java.util.*
  * Adapter for news recyclerView
  */
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = Holder(LayoutInflater.from(parent.context).inflate(R.layout.news_layout_item, parent, false))
     override fun getItemCount() = Utils.news.size
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -81,7 +81,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
             }
 
             if (position + 3 == Utils.news.size && Utils.news.size == Utils.newsBufSize) {
-                (itemView.context as MainActivity).getTweetsMaxId(Utils.news[Utils.news.size - 1].id - 1)
+                (itemView.context as MainActivity).getTweetsMaxId(Utils.news[Utils.news.size - 1].id)
                 Utils.newsBufSize += 10
             }
         }

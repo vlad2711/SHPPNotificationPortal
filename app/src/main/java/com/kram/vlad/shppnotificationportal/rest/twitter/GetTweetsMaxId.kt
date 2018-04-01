@@ -23,14 +23,12 @@ interface GetTweetsMaxId {
                           @Query("count") count: Int = 10): Call<ResponseBody>
     companion object Factory{
         private val TAG = this::class.java.simpleName
-
-        fun create(context: Context): GetTweetsMaxId{
-            val client = OkHttpClient.Builder().cache(Cache(context.cacheDir, 10 * 1024 * 1024)).build()
+        fun create(): GetTweetsMaxId{
             val retrofit = Retrofit.Builder()
-                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(Constants.TWITTER_BASE_URL)
                     .build()
+
 
             return retrofit.create(GetTweetsMaxId::class.java)
         }
