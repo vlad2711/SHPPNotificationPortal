@@ -35,7 +35,6 @@ class RESTUtils(val context: Context) {
 
     fun getTweetsMaxId(maxId: Long, callback: Callback<ResponseBody>){
         GetTweetsMaxId.create().getTweetsMaxId(authKey, maxId).enqueue(callback)
-        Log.d(TAG, maxId.toString())
     }
 }
 

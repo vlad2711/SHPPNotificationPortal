@@ -81,7 +81,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
             }
 
             if (position + 3 == Utils.news.size && Utils.news.size == Utils.newsBufSize) {
-                (itemView.context as MainActivity).getTweetsMaxId(Utils.news[Utils.news.size - 1].id)
+                (itemView.context as MainActivity).getTweetsMaxId(Utils.news.last().id -1)
                 Utils.newsBufSize += 10
             }
         }

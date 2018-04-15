@@ -52,4 +52,5 @@ dependencies {
 
     compile 'com.afollestad:easyvideoplayer:0.3.0'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -1,6 +1,7 @@
 package com.kram.vlad.shppnotificationportal.presenters
 
 import android.content.Context
+import android.util.Log
 import com.kram.vlad.shppnotificationportal.model.SQLiteHelper
 import com.kram.vlad.shppnotificationportal.presenters.base.BasePresenter
 import com.kram.vlad.shppnotificationportal.rest.pojo.TwitterModels
@@ -70,21 +71,34 @@ class MainActivityPresenter(val context: Context) : BasePresenter<MainActivityVi
                 }
             }
 
-            // Log.d(TAG, obj.toString(0))
+            //Log.d(TAG, obj.toString(4))
+
+            var text = obj.getString("full_text")
+            val urls = ArrayList<TwitterModels.Companion.TwitterUrl>()
+            if(obj.getJSONObject("entities").has("urls")) {
+                val urlsJson = obj.getJSONObject("entities").getJSONArray("urls")
+
+                for (j in 0 until urlsJson.length()) {
+                    val url = urlsJson.getJSONObject(j)
+                    urls.add(TwitterModels.Companion.TwitterUrl(url.getString("url"),
+                            url.getString("expanded_url"),
+                            url.getString("display_url")))
+
+                    text = text.replace("\r" + urls[j].url, "\r" + urls[j].displayUrl)
+                }
+            }
 
             Utils.news.add(TwitterModels.Companion.Tweet(
                     obj.getLong("id"),
                     obj.getString("created_at"),
-                    obj.getString("text"),
+                    text,
                     obj.getJSONObject("user").getString("name"),
-                    obj.getJSONObject("user").getString("profile_image_url_https"), medias))
+                    obj.getJSONObject("user").getString("profile_image_url_https"), medias, urls))
 
-            sqLiteHelper.addTweet(Utils.news[i])
+            sqLiteHelper.addTweet(Utils.news[Utils.news.size - 1])
         }
 
-        Utils.newsBufSize = Utils.news.size
+        Utils. newsBufSize = Utils.news.size
         view!!.notifyDataSetChanged()
-
-
     }
 }

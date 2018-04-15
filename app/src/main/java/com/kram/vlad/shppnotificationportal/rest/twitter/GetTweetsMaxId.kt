@@ -15,20 +15,21 @@ import retrofit2.http.Query
  * Retrofit get interface. Get tweets later than id
  */
 interface GetTweetsMaxId {
+
     @GET("1.1/statuses/user_timeline.json")
     fun getTweetsMaxId (@Header("Authorization") bearer: String,
                           @Query("max_id") to: Long,
                           @Query("exclude_replies") exclude: Boolean = true,
                           @Query("screen_name") name: String = Constants.TWITTER_SHPP_NAME,
-                          @Query("count") count: Int = 10): Call<ResponseBody>
+                          @Query("count") count: Int = 10,
+                          @Query("tweet_mode") mode:String = "extended"): Call<ResponseBody>
+
     companion object Factory{
-        private val TAG = this::class.java.simpleName
         fun create(): GetTweetsMaxId{
             val retrofit = Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(Constants.TWITTER_BASE_URL)
                     .build()
-
 
             return retrofit.create(GetTweetsMaxId::class.java)
         }

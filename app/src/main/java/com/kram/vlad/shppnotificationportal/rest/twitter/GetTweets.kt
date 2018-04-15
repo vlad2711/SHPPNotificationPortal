@@ -21,9 +21,8 @@ interface GetTweets {
     fun getTweets (@Header("Authorization") bearer: String,
                    @Query("exclude_replies") exclude: Boolean = true,
                    @Query("screen_name") name: String = Constants.TWITTER_SHPP_NAME,
-                   @Query("count") count: Int = 10): Call<ResponseBody>
-
-
+                   @Query("count") count: Int = 10,
+                   @Query("tweet_mode") mode:String = "extended"): Call<ResponseBody>
 
     companion object Factory {
         fun create(): GetTweets {

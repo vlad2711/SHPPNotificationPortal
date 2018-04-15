@@ -18,6 +18,7 @@ class MainActivity : BaseActivity(), MainActivityView.View {
 
     private val TAG = this::class.java.simpleName
     private val presenter = MainActivityPresenter(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,10 +38,8 @@ class MainActivity : BaseActivity(), MainActivityView.View {
         Utils.news = ArrayList()
     }
 
-    fun getTweetsMaxId(maxId: Long){
-        Log.d(TAG, "${Utils.news.size} $maxId ")
-         presenter.getTweets(maxId)
-    }
+    fun getTweetsMaxId(maxId: Long) = presenter.getTweets(maxId)
+
 
     override fun showMessage(resId: Int) {
         super.showMessage(resId)
