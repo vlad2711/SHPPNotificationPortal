@@ -2,8 +2,11 @@ package com.kram.vlad.shppnotificationportal.adapters
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +68,6 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
 
                         if (itemView.expandable.isExpanded) {
                             itemView.expandable.collapse()
-                        } else {
                             itemView.expandable.expand()
                         }
 
@@ -80,6 +82,21 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
                 itemView.media_content.visibility = View.INVISIBLE
             }
 
+            if(Utils.news[position].urls.isNotEmpty()){
+                val urls = Utils.news[position].urls
+                var text = Utils.news[position].text
+                for (j in 0 until urls.size) {
+                    text = text.replace("\r" + urls[j].url, "\r" +" <a href='${urls[j].expandedUrl}'>${urls[j].displayUrl}</a>")
+                }
+                itemView.text.movementMethod = LinkMovementMethod.getInstance()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    itemView.text.text = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
+                } else{
+                    itemView.text.text = Html.fromHtml(text)
+                }
+            }
+
             if (position + 3 == Utils.news.size && Utils.news.size == Utils.newsBufSize) {
                 (itemView.context as MainActivity).getTweetsMaxId(Utils.news.last().id -1)
                 Utils.newsBufSize += 10
@@ -87,6 +104,6 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
         }
 
         private fun ImageView.setImageUrl(url: String) = Glide.with(this).load(Uri.parse(url))
-                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL).override(Target.SIZE_ORIGINAL)).into(this)
+                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).override(Target.SIZE_ORIGINAL)).into(this)
     }
 }

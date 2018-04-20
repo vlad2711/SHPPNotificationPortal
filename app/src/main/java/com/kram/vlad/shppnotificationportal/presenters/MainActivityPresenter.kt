@@ -1,6 +1,7 @@
 package com.kram.vlad.shppnotificationportal.presenters
 
 import android.content.Context
+import android.text.Html
 import android.util.Log
 import com.kram.vlad.shppnotificationportal.model.SQLiteHelper
 import com.kram.vlad.shppnotificationportal.presenters.base.BasePresenter
@@ -84,7 +85,6 @@ class MainActivityPresenter(val context: Context) : BasePresenter<MainActivityVi
                             url.getString("expanded_url"),
                             url.getString("display_url")))
 
-                    text = text.replace("\r" + urls[j].url, "\r" + urls[j].displayUrl)
                 }
             }
 

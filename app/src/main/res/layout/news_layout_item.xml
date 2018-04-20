@@ -36,7 +36,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
-        android:autoLink="web"
         android:fontFamily="@font/roboto_light"
 
         android:text="TextView"
