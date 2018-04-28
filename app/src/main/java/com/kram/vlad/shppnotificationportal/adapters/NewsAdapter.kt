@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,11 +30,14 @@ import java.util.*
  */
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
 
+    var position:Int = 0
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = Holder(LayoutInflater.from(parent.context).inflate(R.layout.news_layout_item, parent, false))
     override fun getItemCount() = Utils.news.size
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.setIsRecyclable(false)
         holder.bind(position)
+        this.position = position
     }
 
     class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
@@ -56,7 +60,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
             itemView.name.text = Utils.news[position].userName
             itemView.icon.setImageUrl(Utils.news[position].icon_url)
 
-            if (Utils.news[position].mediaUrls.isNotEmpty()) {
+             if (Utils.news[position].mediaUrls.isNotEmpty()) {
                 itemView.media_type_text.text = itemView.resources.getString(Utils.getTextByType(Utils.news[position].mediaUrls[0].type))
                 itemView.media_type_icon.setImageResource(Utils.getImageByType(Utils.news[position].mediaUrls[0].type))
                 itemView.media_content.visibility = View.VISIBLE
@@ -68,15 +72,18 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
 
                         if (itemView.expandable.isExpanded) {
                             itemView.expandable.collapse()
+                        } else{
                             itemView.expandable.expand()
                         }
 
                         Utils.news[position].isExpanded = itemView.expandable.isExpanded
+
+                        Log.d(TAG, "expand")
                     }
                 } else{
-                    itemView.media_content.setOnClickListener({(itemView.context as MainActivity).startActivity(
-                            Intent(itemView.context, MediaActivity::class.java).apply { putExtra("position", position)}
-                    )})
+                    itemView.media_content.setOnClickListener({(itemView.context as MainActivity)
+                            .startActivity(Intent(itemView.context, MediaActivity::class.java).apply { putExtra("position", position)})
+                    })
                 }
             } else {
                 itemView.media_content.visibility = View.INVISIBLE
@@ -85,8 +92,10 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
             if(Utils.news[position].urls.isNotEmpty()){
                 val urls = Utils.news[position].urls
                 var text = Utils.news[position].text
+
+
                 for (j in 0 until urls.size) {
-                    text = text.replace("\r" + urls[j].url, "\r" +" <a href='${urls[j].expandedUrl}'>${urls[j].displayUrl}</a>")
+                    text = text.replace(urls[j].url, " <a href='${urls[j].expandedUrl}'>${urls[j].displayUrl}</a>")
                 }
                 itemView.text.movementMethod = LinkMovementMethod.getInstance()
 
@@ -104,6 +113,9 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
         }
 
         private fun ImageView.setImageUrl(url: String) = Glide.with(this).load(Uri.parse(url))
-                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).override(Target.SIZE_ORIGINAL)).into(this)
+                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.
+                NONE).override(Target.SIZE_ORIGINAL)).into(this)
     }
+
+
 }

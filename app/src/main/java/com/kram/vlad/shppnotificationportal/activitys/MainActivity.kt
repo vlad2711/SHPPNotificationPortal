@@ -2,6 +2,7 @@ package com.kram.vlad.shppnotificationportal.activitys
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
@@ -27,6 +28,8 @@ class MainActivity : BaseActivity(), MainActivityView.View {
         presenter.attachView(this)
         presenter.viewIsReady()
         presenter.getTweets()
+
+        if(savedInstanceState != null) news.scrollToPosition(savedInstanceState.getInt("position"))
     }
 
     private fun userInterfaceInit() {
@@ -58,5 +61,10 @@ class MainActivity : BaseActivity(), MainActivityView.View {
 
     override fun notifyDataSetChanged() {
         if(!news.isComputingLayout) news.adapter.notifyDataSetChanged()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState?.putInt("position", (news.adapter as NewsAdapter).position)
     }
 }

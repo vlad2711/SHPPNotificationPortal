@@ -6,7 +6,7 @@ import com.kram.vlad.shppnotificationportal.view.base.BaseView
  * Created by vlad on 31.03.2018.
  * Base presenter for views presenters
  */
-public open class BasePresenter<T: BaseView> : MVPresenter<T> {
+open class BasePresenter<T: BaseView> : MVPresenter<T> {
     var view: T? = null
         private set
 

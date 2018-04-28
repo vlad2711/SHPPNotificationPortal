@@ -15,6 +15,8 @@ import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by vlad on 31.03.2018.
@@ -53,9 +55,11 @@ class MainActivityPresenter(val context: Context) : BasePresenter<MainActivityVi
             val obj = respon.getJSONObject(i)
             val medias = ArrayList<TwitterModels.Companion.Media>()
 
+            var tweetUrl = ""
             if (obj.has("extended_entities")) {
                 val media = obj.getJSONObject("extended_entities").getJSONArray("media")
                 for (j in 0 until media.length()) {
+                    tweetUrl = media.getJSONObject(j).getString("url")
                     medias.add(TwitterModels.Companion.Media("", "", ""))
                     medias[j].type = media.getJSONObject(j).getString("type")
                     if (medias[j].type == "photo") {
@@ -72,24 +76,36 @@ class MainActivityPresenter(val context: Context) : BasePresenter<MainActivityVi
                 }
             }
 
-            //Log.d(TAG, obj.toString(4))
+            Log.d(TAG, obj.toString(4))
+            var text = obj.getString("full_text");
 
-            var text = obj.getString("full_text")
             val urls = ArrayList<TwitterModels.Companion.TwitterUrl>()
             if(obj.getJSONObject("entities").has("urls")) {
                 val urlsJson = obj.getJSONObject("entities").getJSONArray("urls")
 
                 for (j in 0 until urlsJson.length()) {
                     val url = urlsJson.getJSONObject(j)
+                    val indices = ArrayList<Int>()
+                    indices.add(url.getJSONArray("indices").getInt(0))
+                    indices.add(url.getJSONArray("indices").getInt(1))
+
                     urls.add(TwitterModels.Companion.TwitterUrl(url.getString("url"),
                             url.getString("expanded_url"),
-                            url.getString("display_url")))
+                            url.getString("display_url"),
+                            indices))
+
 
                 }
             }
 
+
+            if(!Objects.equals(tweetUrl, "")){
+                text = text.replace(tweetUrl, "")
+            }
+
             Utils.news.add(TwitterModels.Companion.Tweet(
                     obj.getLong("id"),
+                    tweetUrl,
                     obj.getString("created_at"),
                     text,
                     obj.getJSONObject("user").getString("name"),
