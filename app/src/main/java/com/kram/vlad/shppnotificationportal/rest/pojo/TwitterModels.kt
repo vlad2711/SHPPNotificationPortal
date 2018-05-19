@@ -6,7 +6,7 @@ package com.kram.vlad.shppnotificationportal.rest.pojo
  */
 class TwitterModels {
     companion object {
-        data class TwitterUrl(val url: String, val expandedUrl: String, val displayUrl: String, val indices: ArrayList<Int>)
+        data class TwitterUrl(val url: String, val expandedUrl: String, val displayUrl: String)
         data class TwitterAuth(val token_type: String, val access_token: String)
         @JvmSuppressWildcards data class Media( @JvmSuppressWildcards var type: String, @JvmSuppressWildcards var url: String, @JvmSuppressWildcards var previewUrl: String, @JvmSuppressWildcards val sizes: ArrayList<ImageSizes> = ArrayList())
         data class ImageSizes(val w: Int, val h: Int)

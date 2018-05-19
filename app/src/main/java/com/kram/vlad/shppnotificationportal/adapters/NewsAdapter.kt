@@ -40,6 +40,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
         this.position = position
     }
 
+
     class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
         private val TAG = this::class.java.simpleName
 
@@ -93,10 +94,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
                 val urls = Utils.news[position].urls
                 var text = Utils.news[position].text
 
+                for (j in 0 until urls.size) text = text.replace(urls[j].url, " <a href='${urls[j].expandedUrl}'>${urls[j].displayUrl}</a>")
 
-                for (j in 0 until urls.size) {
-                    text = text.replace(urls[j].url, " <a href='${urls[j].expandedUrl}'>${urls[j].displayUrl}</a>")
-                }
                 itemView.text.movementMethod = LinkMovementMethod.getInstance()
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -106,16 +105,13 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.Holder>() {
                 }
             }
 
-            if (position + 3 == Utils.news.size && Utils.news.size == Utils.newsBufSize) {
+            if (position + 3 == Utils.news.size && Utils.news.size == Utils.newsBufSize && position != 0) {
                 (itemView.context as MainActivity).getTweetsMaxId(Utils.news.last().id -1)
                 Utils.newsBufSize += 10
             }
         }
 
         private fun ImageView.setImageUrl(url: String) = Glide.with(this).load(Uri.parse(url))
-                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.
-                NONE).override(Target.SIZE_ORIGINAL)).into(this)
+                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.DATA).override(Target.SIZE_ORIGINAL)).into(this)
     }
-
-
 }

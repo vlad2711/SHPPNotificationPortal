@@ -27,9 +27,15 @@ class MainActivity : BaseActivity(), MainActivityView.View {
 
         presenter.attachView(this)
         presenter.viewIsReady()
-        presenter.getTweets()
 
-        if(savedInstanceState != null) news.scrollToPosition(savedInstanceState.getInt("position"))
+        if(savedInstanceState != null) {
+            Log.d(TAG, Utils.news.size.toString())
+            val position = savedInstanceState.getInt("position")
+            news.scrollToPosition(position)
+        } else{
+            Utils.news = ArrayList()// you must use it before getTweets()
+            presenter.getTweets()
+        }
     }
 
     private fun userInterfaceInit() {
@@ -38,11 +44,9 @@ class MainActivity : BaseActivity(), MainActivityView.View {
         adapter.setHasStableIds(true)
 
         news.adapter = adapter
-        Utils.news = ArrayList()
     }
 
     fun getTweetsMaxId(maxId: Long) = presenter.getTweets(maxId)
-
 
     override fun showMessage(resId: Int) {
         super.showMessage(resId)
